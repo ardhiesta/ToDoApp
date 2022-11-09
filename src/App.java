@@ -34,7 +34,7 @@ public class App {
         if(input.charAt(0) == '1') System.out.println("\nAnda memilih Insert Task");
         else if(input.charAt(0) == '2') System.out.println("\nAnda memilih Edit Task");
         else if(input.charAt(0) == '3') System.out.println("\nAnda memilih Search Task");
-        else System.out.println("Input invalid!");
+        else System.out.println("\nInput invalid!");
         
         scanner.close();
     }
