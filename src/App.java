@@ -1,5 +1,4 @@
 import java.util.Scanner;
-import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -188,6 +187,86 @@ public class App {
         myScanner.close();
     }
 
+    //method untuk edit task
+    public void editTask(){
+        Scanner myScanner = new Scanner(System.in);
+        System.out.print("Inputkan ID Task yang ingin di edit: ");
+        int id = myScanner.nextInt();
+        selectTaskID(id);
+
+        System.out.println("================================================");
+        System.out.println("1. Nama Tugas\n" + 
+        "2. Deadline Tugas\n");
+        System.out.print("Inputkan data yang ingin diubah (1/2): ");
+        int input = myScanner.nextInt();
+
+        if (input == 1){
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Inputkan Nama Tugas yang baru: ");
+        String newTugas = sc.nextLine();
+        System.out.println("Sedang memperbarui Nama Task yang dipilih....");
+        editNamaTask(id, newTugas);
+        sc.close();
+        }
+        else if(input == 2){
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Inputkan Deadline Tugas yang baru(YYYY-MM-DD): ");
+        String newDeadline = sc.nextLine();
+        System.out.println("Sedang memperbarui Deadline Task yang dipilih....");
+        editDeadlineTask(id, newDeadline);
+        sc.close();
+        }
+        else{
+            System.out.println("Invalid!"); 
+        }
+
+        myScanner.close();
+    }
+    
+    //method untuk edit nama tugas database
+    public void editNamaTask(int id, String newTugas){
+        Connection conn = null;
+        Statement stmt = null;
+        String sql = "UPDATE todo SET tugas = '" +newTugas+"'WHERE id ="+id+";";
+
+        try {
+            // create connection to db
+            conn = DriverManager.getConnection(DB_URL);
+            conn.setAutoCommit(false);
+            stmt = conn.createStatement();
+            System.out.println("Nama Tugas Berhasil diperbarui!");
+            stmt.executeUpdate(sql);
+            stmt.close();
+            conn.commit();
+            conn.close();
+                
+        }catch (SQLException e) {
+            System.out.println("Operasi Gagal " + e.getMessage());
+        }
+    }
+
+    //method untuk edit deadline tugas database
+    public void editDeadlineTask(int id, String newDeadline){
+        Connection conn = null;
+        Statement stmt = null;
+        String sql = "UPDATE todo SET deadline = '" +newDeadline+"'WHERE id ="+id+";";
+
+        try {
+            // create connection to db
+            conn = DriverManager.getConnection(DB_URL);
+            conn.setAutoCommit(false);
+            stmt = conn.createStatement();
+            System.out.println("Deadline Tugas Berhasil diperbarui!");
+            stmt.executeUpdate(sql);
+            stmt.close();
+            conn.commit();
+            conn.close();
+                
+        }catch (SQLException e) {
+            System.out.println("Operasi Gagal " + e.getMessage());
+        }
+    }
+
     public static void main(String[] args) throws Exception {
         App app = new App();
         app.connectDb();
@@ -201,6 +280,7 @@ public class App {
             app.insertTask();
         } else if (input.charAt(0) == '2'){
             //System.out.println("\nAnda memilih Edit Task");
+            app.editTask();
         }
         else if (input.charAt(0) == '3'){
             //System.out.println("\nAnda memilih Search Task");
