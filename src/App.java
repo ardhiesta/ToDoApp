@@ -291,8 +291,5 @@ public class App {
 
         scanner.close();
         conn.close();
-
-        // TODO:
-        // menambahkan edit, dan search tasks
     }
 }
