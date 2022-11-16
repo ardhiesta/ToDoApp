@@ -4,6 +4,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class App {
     static Connection conn = null;
@@ -28,7 +30,7 @@ public class App {
         }
         return conn;
     }
-    
+
     // method untuk tampilan insert task
     public void insertTask(){
         Scanner scanner = new Scanner(System.in);
@@ -37,17 +39,30 @@ public class App {
         String task = scanner.nextLine();
 
         // user diminta mengetik deadline task dalam format YYYY-MM-DD
-        // TODO : 
+        // TODO :
         // checking format deadline yang diinput user, kalau tidak sesuai diminta mengulangi
-        System.out.print("Tuliskan deadline tugas (YYYY-MM-DD): ");
-        String deadline = scanner.nextLine();
-
+        while (true){
+            System.out.print("Tuliskan deadline tugas (YYYY-MM-DD): ");
+            String deadline = scanner.nextLine();
+            String regex = "^((2000|2400|2800|(19|2[0-9])(0[48]|[2468][048]|[13579][26]))-02-29)$" 
+      + "|^(((19|2[0-9])[0-9]{2})-02-(0[1-9]|1[0-9]|2[0-8]))$"
+      + "|^(((19|2[0-9])[0-9]{2})-(0[13578]|10|12)-(0[1-9]|[12][0-9]|3[01]))$" 
+      + "|^(((19|2[0-9])[0-9]{2})-(0[469]|11)-(0[1-9]|[12][0-9]|30))$";
+            Pattern pattern = Pattern.compile(regex);
+            Matcher matcher = pattern.matcher(deadline);
+            if (matcher.matches()) {
+                saveData(task, deadline);
+                break;
+            }
+            else {
+                System.out.println("Format data belum benar");
+            }
+        }
         // panggil method untuk simpan data ke db
-        saveData(task, deadline);
         scanner.close();
-    } 
+    }
 
-    // method untuk menyimpan task ke database 
+    // method untuk menyimpan task ke database
     public static void saveData(String task, String deadline){
         Connection conn = null;
         Statement stmt = null;
@@ -72,7 +87,7 @@ public class App {
         }
         System.out.println("Records created successfully");
     }
-    
+
     //method untuk search tugas berdasarkan id
     public void searchId(){
         Scanner myScanner = new Scanner(System.in);
@@ -87,19 +102,19 @@ public class App {
     //method untuk select tugas berdasarkan ID di database
     public void selectTaskID(int id){
         String sql = "SELECT * FROM todo WHERE id LIKE '" + id + "'";
-    try{
-        Connection conn = this.connectDb();
-        Statement stmt  = conn.createStatement();  
-        ResultSet rs    = stmt.executeQuery(sql);
-        System.out.println("ID\tTugas\t\t\t\tDeadline");
-        while (rs.next()){
-            System.out.println(rs.getInt("id") + "\t" +
-                            rs.getString("tugas") + "\t\t" +
-                            rs.getString("deadline"));
-        }
+        try{
+            Connection conn = this.connectDb();
+            Statement stmt  = conn.createStatement();
+            ResultSet rs    = stmt.executeQuery(sql);
+            System.out.println("ID\tTugas\t\t\t\tDeadline");
+            while (rs.next()){
+                System.out.println(rs.getInt("id") + "\t" +
+                        rs.getString("tugas") + "\t\t" +
+                        rs.getString("deadline"));
+            }
 
-    }  catch (SQLException e){
-        System.out.println(e.getMessage());
+        }  catch (SQLException e){
+            System.out.println(e.getMessage());
         }
     }
 
@@ -117,19 +132,19 @@ public class App {
     //method untuk select tugas berdasarkan nama di database
     public void selectTaskName(String task){
         String sql = "SELECT * FROM todo WHERE tugas LIKE '%" + task + "%'";
-    try{
-        Connection conn = this.connectDb();
-        Statement stmt  = conn.createStatement();  
-        ResultSet rs    = stmt.executeQuery(sql);
-        System.out.println("ID\tTugas\t\t\t\tDeadline");
-        while (rs.next()){
-            System.out.println(rs.getInt("id") + "\t" +
-                            rs.getString("tugas") + "\t\t" +
-                            rs.getString("deadline"));
-        }
+        try{
+            Connection conn = this.connectDb();
+            Statement stmt  = conn.createStatement();
+            ResultSet rs    = stmt.executeQuery(sql);
+            System.out.println("ID\tTugas\t\t\t\tDeadline");
+            while (rs.next()){
+                System.out.println(rs.getInt("id") + "\t" +
+                        rs.getString("tugas") + "\t\t" +
+                        rs.getString("deadline"));
+            }
 
-    }  catch (SQLException e){
-        System.out.println(e.getMessage());
+        }  catch (SQLException e){
+            System.out.println(e.getMessage());
         }
     }
 
@@ -147,19 +162,19 @@ public class App {
     //method untuk select tugas berdasarkan deadline
     public void selectTaskDeadline(String deadline){
         String sql = "SELECT * FROM todo WHERE deadline LIKE '%" + deadline + "%'";
-    try{
-        Connection conn = this.connectDb();
-        Statement stmt  = conn.createStatement();  
-        ResultSet rs    = stmt.executeQuery(sql);
-        System.out.println("ID\tTugas\t\t\t\tDeadline");
-        while (rs.next()){
-            System.out.println(rs.getInt("id") + "\t" +
-                            rs.getString("tugas") + "\t\t" +
-                            rs.getString("deadline"));
-        }
+        try{
+            Connection conn = this.connectDb();
+            Statement stmt  = conn.createStatement();
+            ResultSet rs    = stmt.executeQuery(sql);
+            System.out.println("ID\tTugas\t\t\t\tDeadline");
+            while (rs.next()){
+                System.out.println(rs.getInt("id") + "\t" +
+                        rs.getString("tugas") + "\t\t" +
+                        rs.getString("deadline"));
+            }
 
-    }  catch (SQLException e){
-        System.out.println(e.getMessage());
+        }  catch (SQLException e){
+            System.out.println(e.getMessage());
         }
     }
 
@@ -195,34 +210,34 @@ public class App {
         selectTaskID(id);
 
         System.out.println("================================================");
-        System.out.println("1. Nama Tugas\n" + 
-        "2. Deadline Tugas\n");
+        System.out.println("1. Nama Tugas\n" +
+                "2. Deadline Tugas\n");
         System.out.print("Inputkan data yang ingin diubah (1/2): ");
         int input = myScanner.nextInt();
 
         if (input == 1){
-        Scanner sc = new Scanner(System.in);
-        System.out.print("Inputkan Nama Tugas yang baru: ");
-        String newTugas = sc.nextLine();
-        System.out.println("Sedang memperbarui Nama Task yang dipilih....");
-        editNamaTask(id, newTugas);
-        sc.close();
+            Scanner sc = new Scanner(System.in);
+            System.out.print("Inputkan Nama Tugas yang baru: ");
+            String newTugas = sc.nextLine();
+            System.out.println("Sedang memperbarui Nama Task yang dipilih....");
+            editNamaTask(id, newTugas);
+            sc.close();
         }
         else if(input == 2){
-        Scanner sc = new Scanner(System.in);
-        System.out.print("Inputkan Deadline Tugas yang baru(YYYY-MM-DD): ");
-        String newDeadline = sc.nextLine();
-        System.out.println("Sedang memperbarui Deadline Task yang dipilih....");
-        editDeadlineTask(id, newDeadline);
-        sc.close();
+            Scanner sc = new Scanner(System.in);
+            System.out.print("Inputkan Deadline Tugas yang baru(YYYY-MM-DD): ");
+            String newDeadline = sc.nextLine();
+            System.out.println("Sedang memperbarui Deadline Task yang dipilih....");
+            editDeadlineTask(id, newDeadline);
+            sc.close();
         }
         else{
-            System.out.println("Invalid!"); 
+            System.out.println("Invalid!");
         }
 
         myScanner.close();
     }
-    
+
     //method untuk edit nama tugas database
     public void editNamaTask(int id, String newTugas){
         Connection conn = null;
@@ -239,7 +254,7 @@ public class App {
             stmt.close();
             conn.commit();
             conn.close();
-                
+
         }catch (SQLException e) {
             System.out.println("Operasi Gagal " + e.getMessage());
         }
@@ -261,7 +276,7 @@ public class App {
             stmt.close();
             conn.commit();
             conn.close();
-                
+
         }catch (SQLException e) {
             System.out.println("Operasi Gagal " + e.getMessage());
         }
