@@ -220,7 +220,7 @@ public class App {
                 return deadline;
             }
             else {
-                System.out.println("Format penulisang tanggal belum benar");
+                System.out.println("Format penulisan tanggal belum benar");
             }
         }
     }
