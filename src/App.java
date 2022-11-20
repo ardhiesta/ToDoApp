@@ -39,15 +39,14 @@ public class App {
         String task = scanner.nextLine();
 
         // user diminta mengetik deadline task dalam format YYYY-MM-DD
-        // TODO :
         // checking format deadline yang diinput user, kalau tidak sesuai diminta mengulangi
         while (true){
             System.out.print("Tuliskan deadline tugas (YYYY-MM-DD): ");
             String deadline = scanner.nextLine();
             String regex = "^((2000|2400|2800|(19|2[0-9])(0[48]|[2468][048]|[13579][26]))-02-29)$" 
-      + "|^(((19|2[0-9])[0-9]{2})-02-(0[1-9]|1[0-9]|2[0-8]))$"
-      + "|^(((19|2[0-9])[0-9]{2})-(0[13578]|10|12)-(0[1-9]|[12][0-9]|3[01]))$" 
-      + "|^(((19|2[0-9])[0-9]{2})-(0[469]|11)-(0[1-9]|[12][0-9]|30))$";
+                            + "|^(((19|2[0-9])[0-9]{2})-02-(0[1-9]|1[0-9]|2[0-8]))$"
+                            + "|^(((19|2[0-9])[0-9]{2})-(0[13578]|10|12)-(0[1-9]|[12][0-9]|3[01]))$" 
+                            + "|^(((19|2[0-9])[0-9]{2})-(0[469]|11)-(0[1-9]|[12][0-9]|30))$";
             Pattern pattern = Pattern.compile(regex);
             Matcher matcher = pattern.matcher(deadline);
             if (matcher.matches()) {
@@ -202,6 +201,30 @@ public class App {
         myScanner.close();
     }
 
+    // method untuk checking format penulisan tanggal (date validation) pada saat edit task
+    public String dateValidation(){
+        Scanner scanner = new Scanner(System.in);
+        // user diminta mengetik deadline task dalam format YYYY-MM-DD
+        // checking format deadline yang diinput user, kalau tidak sesuai diminta mengulangi
+        while (true){
+            System.out.print("Inputkan Deadline Tugas yang baru(YYYY-MM-DD): ");
+            String deadline = scanner.nextLine();
+            String regex = "^((2000|2400|2800|(19|2[0-9])(0[48]|[2468][048]|[13579][26]))-02-29)$" 
+                            + "|^(((19|2[0-9])[0-9]{2})-02-(0[1-9]|1[0-9]|2[0-8]))$"
+                            + "|^(((19|2[0-9])[0-9]{2})-(0[13578]|10|12)-(0[1-9]|[12][0-9]|3[01]))$" 
+                            + "|^(((19|2[0-9])[0-9]{2})-(0[469]|11)-(0[1-9]|[12][0-9]|30))$";
+            Pattern pattern = Pattern.compile(regex);
+            Matcher matcher = pattern.matcher(deadline);
+            if (matcher.matches()) {
+                scanner.close();
+                return deadline;
+            }
+            else {
+                System.out.println("Format penulisan tanggal belum benar");
+            }
+        }
+    }
+
     //method untuk edit task
     public void editTask(){
         Scanner myScanner = new Scanner(System.in);
@@ -225,8 +248,7 @@ public class App {
         }
         else if(input == 2){
             Scanner sc = new Scanner(System.in);
-            System.out.print("Inputkan Deadline Tugas yang baru(YYYY-MM-DD): ");
-            String newDeadline = sc.nextLine();
+            String newDeadline = dateValidation();
             System.out.println("Sedang memperbarui Deadline Task yang dipilih....");
             editDeadlineTask(id, newDeadline);
             sc.close();
